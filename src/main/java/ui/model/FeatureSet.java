@@ -32,7 +32,7 @@ public class FeatureSet {
         }
     }
 
-    
+
 
     public void display() {
         System.out.println(format("Total entries : %d",entryCount));
