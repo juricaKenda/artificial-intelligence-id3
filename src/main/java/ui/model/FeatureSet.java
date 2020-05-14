@@ -2,9 +2,10 @@ package main.java.ui.model;
 
 import main.java.ui.model.feature.Feature;
 
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 
 public class FeatureSet {
     private List<Feature> features;
@@ -92,12 +93,27 @@ public class FeatureSet {
     }
 
     public String mostFrequentValue(){
-        return label.getValues().stream()
-                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
-                .entrySet()
-                .stream()
-                .max(Map.Entry.comparingByValue())
-                .map(Map.Entry::getKey)
-                .orElseThrow();
+        HashMap<String,Integer> occurrences = new HashMap<>();
+        for (String value : label.getValues()) {
+            if (!occurrences.containsKey(value)){
+                occurrences.put(value,1);
+            }else {
+                occurrences.put(value,occurrences.get(value)+1);
+            }
+        }
+        int max = Integer.MIN_VALUE;
+        String selected = "";
+        for (String value : label.getValues()) {
+            Integer count = occurrences.get(value);
+            if (count > max){
+                max = count;
+                selected = value;
+            }else if(count == max){
+                if (selected.compareTo(value) > 0){
+                    selected = value;
+                }
+            }
+        }
+        return selected;
     }
 }
