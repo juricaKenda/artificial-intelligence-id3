@@ -10,13 +10,11 @@ public class Node extends TreeElement {
     private List<TreeElement> children;
     private Feature splitterFeature;
 
-
     public Node(TreeElement parent, List<TreeElement> children, Feature splitterFeature, FeatureSet featureSet) {
         super(parent,featureSet);
         this.children = children;
         this.splitterFeature = splitterFeature;
     }
-
 
     @Override
     public List<TreeElement> children() {

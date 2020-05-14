@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class Leaf extends TreeElement {
-
     private String labelValue;
 
     public Leaf(TreeElement parent, FeatureSet featureSet, String label) {
