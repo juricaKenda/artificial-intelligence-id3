@@ -77,4 +77,8 @@ public class Model {
     public int labelSize(){
         return labelSize;
     }
+
+    public HashMap<Integer, List<String>> depthLog(){
+        return depthLog;
+    }
 }
