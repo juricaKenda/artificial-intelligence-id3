@@ -10,4 +10,12 @@ public class Tree {
     public TreeElement root() {
         return root;
     }
+
+    public String labelKey() {
+        return root.featureSet().label();
+    }
+
+    public int labelSize() {
+        return root.featureSet().labelSize();
+    }
 }

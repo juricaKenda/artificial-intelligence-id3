@@ -116,4 +116,12 @@ public class FeatureSet {
         }
         return selected;
     }
+
+    public String label() {
+        return label.key();
+    }
+
+    public int labelSize() {
+        return label.optionCount();
+    }
 }

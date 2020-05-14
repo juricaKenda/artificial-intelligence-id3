@@ -11,10 +11,14 @@ public class Model {
     private HashMap<Integer,List<String>> depthLog;
     private HashMap<String,String> struct;
     private String proxyWalker = ".";
+    private String labelKey;
+    private int labelSize;
 
-    public Model(){
+    public Model(String labelKey,int labelSize){
         depthLog = new HashMap<>();
         struct = new HashMap<>();
+        this.labelKey = labelKey;
+        this.labelSize = labelSize;
     }
 
     public void bindResult(String proxy,String cmd){
@@ -66,7 +70,11 @@ public class Model {
         depthLog.get(depth).add(splitter);
     }
 
-    public void show() {
-        System.out.println(depthLog);
+    public String labelKey() {
+        return labelKey;
+    }
+
+    public int labelSize(){
+        return labelSize;
     }
 }

@@ -114,4 +114,10 @@ public class Feature {
         return entriesByIndex.get(index);
     }
 
+    public String key() {
+        return key;
+    }
+    public int optionCount(){
+        return valueMeta.keySet().size();
+    }
 }
