@@ -3,7 +3,9 @@ package main.java.ui.model;
 import main.java.ui.model.feature.Feature;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class FeatureSet {
     private List<Feature> features;
@@ -17,7 +19,12 @@ public class FeatureSet {
             features.add(new Feature(key));
         }
         label = features.get(features.size() - 1);
-        label.markLabel();
+    }
+
+    private FeatureSet(List<Feature> features,Feature label, int entries){
+        this.features = features;
+        this.label = label;
+        this.entryCount = entries;
     }
 
     public void insert(String[] featureValues) {
@@ -25,30 +32,57 @@ public class FeatureSet {
             throw new UnsupportedOperationException("Invalid feature key-value count!");
         }
 
-        entryCount++;
-        String label = featureValues[featureValues.length-1];
+        String label = featureValues[features.size() - 1];
         for (int i=0; i<features.size(); i++){
             String value = featureValues[i];
             Feature feature = features.get(i);
-            feature.bindValueForLabel(value,label);
+            feature.bindValueForLabel(value,label,entryCount);
         }
+        entryCount++;
     }
 
-    public void display() {
-        features.forEach(System.out::println);
-        features.forEach(feature -> System.out.println(feature.getInformationGain(label.getValues())));
+    public List<FeatureSet> split(){
+        Optional<Feature> featureOpt = maxGainFeature();
+        if (featureOpt.isEmpty()) {
+            return Collections.emptyList();
+        }
+        Feature feature = featureOpt.get();
+        List<FeatureSet> sets = new ArrayList<>();
+        List<List<Integer>> partitions = feature.valueIndexes();
+        for (List<Integer> partition : partitions) {
+            FeatureSet featureSet = subsetFrom(partition, feature);
+            sets.add(featureSet);
+        }
+        return sets;
     }
 
-    public List<String> recreateEntries(){
-        List<String> entries = new ArrayList<>();
-        for (int i=0; i<entryCount; i++){
-            StringBuilder entry = new StringBuilder();
-            for (Feature feature : features){
-                entry.append(feature.getEntry(i)).append(" ");
+    private FeatureSet subsetFrom(List<Integer> partition, Feature splitter) {
+        List<Feature> partitionedFeatures = new ArrayList<>();
+        for (Feature feature : features) {
+            if (feature.equals(splitter) || feature.equals(label)){
+                continue;
             }
-            entries.add(entry.toString());
-
+            partitionedFeatures.add(feature.subsetFrom(partition));
         }
-        return entries;
+        return new FeatureSet(partitionedFeatures,label.subsetFrom(partition),partition.size());
+    }
+
+    private Optional<Feature> maxGainFeature(){
+        double maxGain = 0;
+        Feature maxFeature = null;
+        for (Feature feature : features){
+            if (feature.equals(label)){
+                continue;
+            }
+            double gain = feature.getInformationGain(label.getValues());
+            if(gain > maxGain){
+                maxFeature = feature;
+                maxGain = gain;
+            }
+        }
+        if (maxGain == 0 && maxFeature == null){
+            return Optional.empty();
+        }
+        return Optional.of(maxFeature);
     }
 }
