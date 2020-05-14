@@ -3,7 +3,6 @@ package main.java.ui.model;
 import main.java.ui.model.feature.Feature;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,9 +10,9 @@ public class FeatureSet {
     private List<Feature> features;
     private Feature label;
     private int entryCount;
+    private String proxyAttribute = ".";
 
     public FeatureSet(String[] featureKeys) {
-        entryCount = 0;
         features = new ArrayList<>();
         for (String key : featureKeys){
             features.add(new Feature(key));
@@ -21,10 +20,11 @@ public class FeatureSet {
         label = features.get(features.size() - 1);
     }
 
-    private FeatureSet(List<Feature> features,Feature label, int entries){
+    private FeatureSet(List<Feature> features, Feature label, int entries, String attribute){
         this.features = features;
         this.label = label;
         this.entryCount = entries;
+        this.proxyAttribute = attribute;
     }
 
     public void insert(String[] featureValues) {
@@ -41,16 +41,11 @@ public class FeatureSet {
         entryCount++;
     }
 
-    public List<FeatureSet> split(){
-        Optional<Feature> featureOpt = maxGainFeature();
-        if (featureOpt.isEmpty()) {
-            return Collections.emptyList();
-        }
-        Feature feature = featureOpt.get();
+    public List<FeatureSet> split(Feature splitter){
         List<FeatureSet> sets = new ArrayList<>();
-        List<List<Integer>> partitions = feature.valueIndexes();
+        List<List<Integer>> partitions = splitter.valueIndexes();
         for (List<Integer> partition : partitions) {
-            FeatureSet featureSet = subsetFrom(partition, feature);
+            FeatureSet featureSet = subsetFrom(partition, splitter);
             sets.add(featureSet);
         }
         return sets;
@@ -64,11 +59,13 @@ public class FeatureSet {
             }
             partitionedFeatures.add(feature.subsetFrom(partition));
         }
-        return new FeatureSet(partitionedFeatures,label.subsetFrom(partition),partition.size());
+        Integer index = partition.get(0);
+        String attr = splitter.entryByIndex(index);
+        return new FeatureSet(partitionedFeatures,label.subsetFrom(partition),partition.size(),attr);
     }
 
-    private Optional<Feature> maxGainFeature(){
-        double maxGain = 0;
+    public Optional<Feature> maxGainFeature(){
+        double maxGain = Double.MIN_VALUE;
         Feature maxFeature = null;
         for (Feature feature : features){
             if (feature.equals(label)){
@@ -80,9 +77,18 @@ public class FeatureSet {
                 maxGain = gain;
             }
         }
-        if (maxGain == 0 && maxFeature == null){
+        if (maxGain == Double.MIN_VALUE){
             return Optional.empty();
         }
         return Optional.of(maxFeature);
+    }
+
+    public String labelValue() {
+        return label.entriesByIndex().values().stream().findAny().orElseThrow();
+    }
+
+
+    public String proxyAttribute() {
+        return proxyAttribute;
     }
 }
