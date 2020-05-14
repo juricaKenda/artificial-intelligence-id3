@@ -3,6 +3,7 @@ package main.java.ui.id3;
 import main.java.ui.id3.model.Config;
 import main.java.ui.id3.model.Model;
 import main.java.ui.id3.model.SearchableTuple;
+import main.java.ui.id3.utils.Analytics;
 import main.java.ui.id3.utils.TreeZip;
 import main.java.ui.model.FeatureSet;
 import main.java.ui.model.feature.Feature;
@@ -51,6 +52,17 @@ public class ID3 {
 
     private boolean depthExceeded(int depth) {
         return config.depth() == depth;
+    }
+
+    public Analytics predict(List<SearchableTuple> searchables){
+        Analytics analytics = new Analytics(model.labelSize(),model.depthLog());
+        String labelKey = model.labelKey();
+        for (SearchableTuple searchable : searchables) {
+            String prediction = predict(searchable);
+            String actual = searchable.get(labelKey);
+            analytics.commit(prediction,actual);
+        }
+        return analytics;
     }
 
     public String predict(SearchableTuple searchable){
