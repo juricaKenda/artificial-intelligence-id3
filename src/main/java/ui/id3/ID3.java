@@ -1,6 +1,9 @@
 package main.java.ui.id3;
 
 import main.java.ui.id3.model.Config;
+import main.java.ui.id3.model.Model;
+import main.java.ui.id3.model.SearchableTuple;
+import main.java.ui.id3.utils.TreeZip;
 import main.java.ui.model.FeatureSet;
 import main.java.ui.model.feature.Feature;
 import main.java.ui.model.tree.Leaf;
@@ -13,12 +16,15 @@ import java.util.List;
 
 public class ID3 {
     private Config config;
+    private Model model;
+
     public ID3(Config config){
         this.config = config;
     }
 
-    public Tree train(FeatureSet featureSet){
-        return new Tree(trainModel(featureSet, null,0));
+    public void train(FeatureSet featureSet){
+        Tree tree = new Tree(trainModel(featureSet, null, 0));
+        model = TreeZip.zip(tree);
     }
 
     private TreeElement trainModel(FeatureSet featureSet, TreeElement parent, int depth) {
@@ -45,5 +51,15 @@ public class ID3 {
 
     private boolean depthExceeded(int depth) {
         return config.depth() == depth;
+    }
+
+    public String predict(SearchableTuple searchable){
+        model.load();
+        while (model.requireFeed()){
+            String key = model.nextRequest();
+            String value = searchable.get(key);
+            model.feed(value);
+        }
+        return model.result();
     }
 }
