@@ -22,7 +22,7 @@ public class ID3 {
         this.config = config;
     }
 
-    public void train(FeatureSet featureSet){
+    public void fit(FeatureSet featureSet){
         Tree tree = new Tree(trainModel(featureSet, null, 0));
         model = TreeZip.zip(tree);
     }
