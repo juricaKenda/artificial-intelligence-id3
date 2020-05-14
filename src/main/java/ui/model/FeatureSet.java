@@ -2,9 +2,9 @@ package main.java.ui.model;
 
 import main.java.ui.model.feature.Feature;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class FeatureSet {
     private List<Feature> features;
@@ -83,12 +83,21 @@ public class FeatureSet {
         return Optional.of(maxFeature);
     }
 
-    public String labelValue() {
+    public String proxyAttribute() {
+        return proxyAttribute;
+    }
+
+    public String leafLabelValue() {
         return label.entriesByIndex().values().stream().findAny().orElseThrow();
     }
 
-
-    public String proxyAttribute() {
-        return proxyAttribute;
+    public String mostFrequentValue(){
+        return label.getValues().stream()
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+                .entrySet()
+                .stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElseThrow();
     }
 }
