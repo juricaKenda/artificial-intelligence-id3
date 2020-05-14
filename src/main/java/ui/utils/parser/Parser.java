@@ -5,10 +5,9 @@ import main.java.ui.utils.iterator.Iterator;
 
 public class Parser {
 
-
     public FeatureSet parseFeatureSet(Iterator iterator){
         if (!iterator.hasNext()){
-            throw new UnsupportedOperationException("Cannot parse an uniterable!");
+            throw new UnsupportedOperationException("Can not parse an uniterable!");
         }
         FeatureSet featureSet = new FeatureSet(parseFeatureKeys(iterator.next()));
         while (iterator.hasNext()){
