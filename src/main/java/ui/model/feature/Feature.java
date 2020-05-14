@@ -35,7 +35,7 @@ public class Feature {
     }
 
 
-    public double getInformationGain(Set<String> values){
+    public double getInformationGain(Collection<String> values){
         double entropy = EntropyCalculator.execute(getValuePartitions(values), entriesByIndex.size());
         for (Meta meta : valueMeta.values()){
             entropy -= meta.getEntropy()*meta.partitionSize()/ entriesByIndex.size();
@@ -43,7 +43,7 @@ public class Feature {
         return entropy;
     }
 
-    private Collection<Integer> getValuePartitions(Set<String> values) {
+    private Collection<Integer> getValuePartitions(Collection<String> values) {
         List<Integer> totals = new ArrayList<>();
         for (String value : values){
             int sum = 0;
@@ -60,8 +60,8 @@ public class Feature {
         return key;
     }
 
-    public Set<String> getValues() {
-        return valueMeta.keySet();
+    public Collection<String> getValues() {
+        return entriesByIndex.values();
     }
 
     public List<List<Integer>> valueIndexes() {
