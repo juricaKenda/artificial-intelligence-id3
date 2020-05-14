@@ -4,8 +4,6 @@ import main.java.ui.utils.EntropyCalculator;
 
 import java.util.*;
 
-import static java.lang.String.format;
-
 public class Feature {
     private String key;
     private HashMap<Integer,String> entriesByIndex;
@@ -59,7 +57,7 @@ public class Feature {
 
     @Override
     public String toString() {
-        return format("%s (%s) : %s",key, entriesByIndex,valueMeta);
+        return key;
     }
 
     public Set<String> getValues() {
@@ -108,6 +106,12 @@ public class Feature {
         }
         return partitioned;
     }
-
+    
+    public HashMap<Integer, String> entriesByIndex() {
+        return entriesByIndex;
+    }
+    public String entryByIndex(int index) {
+        return entriesByIndex.get(index);
+    }
 
 }
