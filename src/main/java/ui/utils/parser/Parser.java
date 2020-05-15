@@ -1,5 +1,6 @@
 package main.java.ui.utils.parser;
 
+import main.java.ui.id3.model.Config;
 import main.java.ui.id3.model.SearchableTuple;
 import main.java.ui.model.FeatureSet;
 import main.java.ui.utils.iterator.Iterator;
@@ -53,11 +54,25 @@ public class Parser {
         return tuple;
     }
 
-    private String[] parseFeatureValues(String values) {
-        return values.split(",");
+    public Config parseConfig(Iterator iterator) {
+        Config.Builder builder = new Config.Builder();
+        while (iterator.hasNext()){
+            String[] keyVal = parseConfigPair(iterator.next());
+            builder.set(keyVal[0],keyVal[1]);
+        }
+        iterator.onTermination();
+        return builder.build();
     }
 
     private String[] parseFeatureKeys(String keys) {
         return keys.split(",");
+    }
+
+    private String[] parseFeatureValues(String values) {
+        return values.split(",");
+    }
+
+    private String[] parseConfigPair(String line) {
+        return line.split("=");
     }
 }
