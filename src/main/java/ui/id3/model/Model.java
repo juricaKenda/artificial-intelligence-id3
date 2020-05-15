@@ -4,21 +4,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static java.lang.String.*;
-import static main.java.ui.id3.model.Const.*;
+import static java.lang.String.format;
+import static main.java.ui.id3.model.Const.CMD;
+import static main.java.ui.id3.model.Const.TARGET;
 
 public class Model {
     private HashMap<Integer,List<String>> depthLog;
     private HashMap<String,String> struct;
-    private String proxyWalker = ".";
+    private String proxyWalker;
     private String labelKey;
+    private String labelFallback;
     private int labelSize;
 
-    public Model(String labelKey,int labelSize){
+    public Model(String labelKey, int labelSize,String fallback){
         depthLog = new HashMap<>();
         struct = new HashMap<>();
         this.labelKey = labelKey;
         this.labelSize = labelSize;
+        proxyWalker = ".";
+        labelFallback = fallback;
     }
 
     public void bindResult(String proxy,String cmd){
@@ -38,6 +42,9 @@ public class Model {
     }
 
     public String result(){
+        if (proxyWalker == null){
+            return labelFallback;
+        }
         return proxyWalker.replace(TARGET,"");
     }
 
@@ -55,7 +62,7 @@ public class Model {
     }
 
     private boolean reachedResult(String proxyWalker) {
-        return proxyWalker.startsWith(TARGET);
+        return proxyWalker == null || proxyWalker.startsWith(TARGET);
     }
 
     public void load() {
