@@ -1,11 +1,13 @@
 package main.java.ui.id3.utils;
 
+import main.java.ui.Analytics;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-public class Analytics {
+public class ID3Analytics implements Analytics {
     private int labelSize;
     private int totalChecks;
     private double correct;
@@ -13,7 +15,7 @@ public class Analytics {
     private List<String> predictions;
     private HashMap<Integer,List<String>> depthLog;
 
-    public Analytics(int labelSize, HashMap<Integer, List<String>> depthLog) {
+    public ID3Analytics(int labelSize, HashMap<Integer, List<String>> depthLog) {
         this.labelSize = labelSize;
         pairs = new ArrayList<>();
         predictions = new ArrayList<>();
@@ -29,6 +31,7 @@ public class Analytics {
         totalChecks++;
     }
 
+    @Override
     public void show(){
         showDepthLog();
         showPredictions();

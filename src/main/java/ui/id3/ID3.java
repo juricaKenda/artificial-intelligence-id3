@@ -1,9 +1,11 @@
 package main.java.ui.id3;
 
+import main.java.ui.Analytics;
+import main.java.ui.Runner;
 import main.java.ui.id3.model.Config;
 import main.java.ui.id3.model.Model;
 import main.java.ui.id3.model.SearchableTuple;
-import main.java.ui.id3.utils.Analytics;
+import main.java.ui.id3.utils.ID3Analytics;
 import main.java.ui.id3.utils.TreeZip;
 import main.java.ui.model.FeatureSet;
 import main.java.ui.model.feature.Feature;
@@ -15,7 +17,7 @@ import main.java.ui.model.tree.TreeElement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ID3 {
+public class ID3 implements Runner {
     private Config config;
     private Model model;
 
@@ -23,6 +25,7 @@ public class ID3 {
         this.config = config;
     }
 
+    @Override
     public void fit(FeatureSet featureSet){
         Tree tree = new Tree(trainModel(featureSet, null, 0));
         model = TreeZip.zip(tree);
@@ -54,15 +57,16 @@ public class ID3 {
         return config.depth() == depth;
     }
 
+    @Override
     public Analytics predict(List<SearchableTuple> searchables){
-        Analytics analytics = new Analytics(model.labelSize(),model.depthLog());
+        ID3Analytics ID3Analytics = new ID3Analytics(model.labelSize(),model.depthLog());
         String labelKey = model.labelKey();
         for (SearchableTuple searchable : searchables) {
             String prediction = predict(searchable);
             String actual = searchable.get(labelKey);
-            analytics.commit(prediction,actual);
+            ID3Analytics.commit(prediction,actual);
         }
-        return analytics;
+        return ID3Analytics;
     }
 
     public String predict(SearchableTuple searchable){
