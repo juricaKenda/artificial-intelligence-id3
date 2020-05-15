@@ -2,16 +2,15 @@ package main.java.ui.model;
 
 import main.java.ui.model.feature.Feature;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class FeatureSet {
     private List<Feature> features;
     private Feature label;
     private int entryCount;
-    private String proxyAttribute = ".";
+    private String proxyAttribute;
 
     public FeatureSet(String[] featureKeys) {
         features = new ArrayList<>();
@@ -19,6 +18,7 @@ public class FeatureSet {
             features.add(new Feature(key));
         }
         label = features.get(features.size() - 1);
+        proxyAttribute = ".";
     }
 
     private FeatureSet(List<Feature> features, Feature label, int entries, String attribute){
@@ -52,6 +52,26 @@ public class FeatureSet {
         return sets;
     }
 
+    public FeatureSet split(List<Integer> partition) {
+        List<Feature> partitionedFeatures = new ArrayList<>();
+        for (Feature feature : features) {
+            partitionedFeatures.add(feature.subsetFrom(partition));
+        }
+        return new FeatureSet(partitionedFeatures,label.subsetFrom(partition),partition.size(),proxyAttribute);
+    }
+
+    public void sift(List<Integer> selected){
+        List<String> wanted = new ArrayList<>();
+        wanted.add(features.get(featureCount()-1).key());
+        for (Integer index : selected) {
+            wanted.add(features.get(index).key());
+        }
+        features = features.stream()
+                .filter(feature -> wanted.contains(feature.key()))
+                .collect(Collectors.toList());
+    }
+
+
     private FeatureSet subsetFrom(List<Integer> partition, Feature splitter) {
         List<Feature> partitionedFeatures = new ArrayList<>();
         for (Feature feature : features) {
@@ -65,19 +85,11 @@ public class FeatureSet {
         return new FeatureSet(partitionedFeatures,label.subsetFrom(partition),partition.size(),attr);
     }
 
-    public FeatureSet split(List<Integer> partition) {
-        List<Feature> partitionedFeatures = new ArrayList<>();
-        for (Feature feature : features) {
-            partitionedFeatures.add(feature.subsetFrom(partition));
-        }
-        return new FeatureSet(partitionedFeatures,label.subsetFrom(partition),partition.size(),"");
-    }
-
     public Optional<Feature> maxGainFeature(){
         double maxGain = Double.MIN_VALUE;
         Feature maxFeature = null;
         for (Feature feature : features){
-            if (feature.equals(label)){
+            if (feature.key().equals(label.key())){
                 continue;
             }
             double gain = feature.getInformationGain(label.getValues());
@@ -101,28 +113,13 @@ public class FeatureSet {
     }
 
     public String mostFrequentValue(){
-        HashMap<String,Integer> occurrences = new HashMap<>();
-        for (String value : label.getValues()) {
-            if (!occurrences.containsKey(value)){
-                occurrences.put(value,1);
-            }else {
-                occurrences.put(value,occurrences.get(value)+1);
-            }
-        }
-        int max = Integer.MIN_VALUE;
-        String selected = "";
-        for (String value : label.getValues()) {
-            Integer count = occurrences.get(value);
-            if (count > max){
-                max = count;
-                selected = value;
-            }else if(count == max){
-                if (selected.compareTo(value) > 0){
-                    selected = value;
-                }
-            }
-        }
-        return selected;
+        return label.getValues().stream()
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+                .entrySet()
+                .stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElseThrow();
     }
 
     public String label() {
@@ -132,4 +129,13 @@ public class FeatureSet {
     public int labelSize() {
         return label.optionCount();
     }
+
+    public int datasetSize() {
+        return entryCount;
+    }
+
+    public int featureCount() {
+        return features.size();
+    }
+
 }
