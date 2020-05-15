@@ -18,4 +18,8 @@ public class Tree {
     public int labelSize() {
         return root.featureSet().labelSize();
     }
+
+    public String fallback() {
+        return root.featureSet().mostFrequentValue();
+    }
 }
