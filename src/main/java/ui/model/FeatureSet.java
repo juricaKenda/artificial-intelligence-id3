@@ -65,6 +65,14 @@ public class FeatureSet {
         return new FeatureSet(partitionedFeatures,label.subsetFrom(partition),partition.size(),attr);
     }
 
+    public FeatureSet split(List<Integer> partition) {
+        List<Feature> partitionedFeatures = new ArrayList<>();
+        for (Feature feature : features) {
+            partitionedFeatures.add(feature.subsetFrom(partition));
+        }
+        return new FeatureSet(partitionedFeatures,label.subsetFrom(partition),partition.size(),"");
+    }
+
     public Optional<Feature> maxGainFeature(){
         double maxGain = Double.MIN_VALUE;
         Feature maxFeature = null;
