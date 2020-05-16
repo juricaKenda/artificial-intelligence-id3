@@ -138,4 +138,18 @@ public class FeatureSet {
         return features.size();
     }
 
+    public List<String> features() {
+        List<String> feat = new ArrayList<>();
+        for (Feature feature : features) {
+            if (feature.key().equals(label.key())){
+                continue;
+            }
+            feat.add(feature.key());
+        }
+        return feat;
+    }
+
+    public List<String> labelValues() {
+        return label.getValues().stream().distinct().collect(Collectors.toList());
+    }
 }
