@@ -59,7 +59,7 @@ public class ID3 implements Runner {
 
     @Override
     public Analytics predict(List<SearchableTuple> searchables){
-        ID3Analytics ID3Analytics = new ID3Analytics(model.labelSize(),model.depthLog());
+        ID3Analytics ID3Analytics = new ID3Analytics(model.depthLog(),model.labelValues());
         String labelKey = model.labelKey();
         for (SearchableTuple searchable : searchables) {
             String prediction = predict(searchable);
@@ -77,5 +77,14 @@ public class ID3 implements Runner {
             model.feed(value);
         }
         return model.result();
+    }
+
+    public String labelKey() {
+        return model.labelKey();
+    }
+
+
+    public List<String> labels() {
+        return model.labelValues();
     }
 }
