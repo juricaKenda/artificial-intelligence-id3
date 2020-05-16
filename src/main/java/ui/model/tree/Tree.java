@@ -1,5 +1,7 @@
 package main.java.ui.model.tree;
 
+import java.util.List;
+
 public class Tree {
     private TreeElement root;
 
@@ -15,11 +17,11 @@ public class Tree {
         return root.featureSet().label();
     }
 
-    public int labelSize() {
-        return root.featureSet().labelSize();
-    }
-
     public String fallback() {
         return root.featureSet().mostFrequentValue();
+    }
+
+    public List<String> labelValues() {
+        return root.featureSet().labelValues();
     }
 }
