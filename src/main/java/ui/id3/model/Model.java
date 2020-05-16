@@ -14,15 +14,15 @@ public class Model {
     private String proxyWalker;
     private String labelKey;
     private String labelFallback;
-    private int labelSize;
+    private List<String> labels;
 
-    public Model(String labelKey, int labelSize,String fallback){
+    public Model(String labelKey,String fallback,List<String> labels){
         depthLog = new HashMap<>();
         struct = new HashMap<>();
         this.labelKey = labelKey;
-        this.labelSize = labelSize;
         proxyWalker = ".";
         labelFallback = fallback;
+        this.labels = labels;
     }
 
     public void bindResult(String proxy,String cmd){
@@ -81,11 +81,11 @@ public class Model {
         return labelKey;
     }
 
-    public int labelSize(){
-        return labelSize;
-    }
-
     public HashMap<Integer, List<String>> depthLog(){
         return depthLog;
+    }
+
+    public List<String> labelValues() {
+        return labels;
     }
 }
