@@ -8,7 +8,7 @@ public class TreeZip {
 
     public static Model zip(Tree tree) {
         String fallback = tree.fallback();
-        Model model = new Model(tree.labelKey(),tree.labelSize(),fallback);
+        Model model = new Model(tree.labelKey(),fallback,tree.labelValues());
         recursiveZip(tree.root(),0,model);
         return model;
     }
