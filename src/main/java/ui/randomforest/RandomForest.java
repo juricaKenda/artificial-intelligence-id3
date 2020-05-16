@@ -6,6 +6,7 @@ import main.java.ui.id3.ID3;
 import main.java.ui.id3.model.Config;
 import main.java.ui.id3.model.SearchableTuple;
 import main.java.ui.model.FeatureSet;
+import main.java.ui.randomforest.utils.RFAnalytics;
 import main.java.ui.randomforest.utils.RFRand;
 
 import java.util.ArrayList;
@@ -14,10 +15,14 @@ import java.util.List;
 public class RandomForest implements Runner {
     private Config config;
     private List<ID3> models;
+    private List<List<Integer>> partitions;
+    private List<List<String>> features;
 
     public RandomForest(Config config) {
        this.config = config;
        models = new ArrayList<>();
+       partitions = new ArrayList<>();
+       features = new ArrayList<>();
     }
 
     @Override
@@ -43,7 +48,9 @@ public class RandomForest implements Runner {
     private FeatureSet selectDataSubset(FeatureSet featureSet) {
         int datasetSize = featureSet.datasetSize();
         double exampleRatio = config.exampleRatio();
-        return featureSet.split(RFRand.dataInstances(datasetSize, exampleRatio));
+        List<Integer> partition = RFRand.dataInstances(datasetSize, exampleRatio);
+        partitions.add(partition);
+        return featureSet.split(partition);
     }
 
     private FeatureSet selectFeatureSubset(FeatureSet featureSet) {
@@ -51,20 +58,21 @@ public class RandomForest implements Runner {
         double featureRatio = config.featureRatio();
         List<Integer> selected = RFRand.featureInstances(featureCount, featureRatio);
         featureSet.sift(selected);
+        features.add(featureSet.features());
         return featureSet;
     }
 
 
     @Override
     public Analytics predict(List<SearchableTuple> searchables) {
+        RFAnalytics analytics = new RFAnalytics(partitions,features,models.get(0).labels());
         for (SearchableTuple searchable : searchables) {
             for (ID3 model : models) {
-                String predict = model.predict(searchable);
-                System.out.print(predict+" ");
+                String prediction = model.predict(searchable);
+                analytics.commit(prediction);
             }
-            System.out.println();
+            analytics.conclude(searchable.get(models.get(0).labelKey()));
         }
-        return () -> {
-        };
+        return analytics;
     }
 }
