@@ -27,24 +27,24 @@ public class ID3 implements Runner {
 
     @Override
     public void fit(FeatureSet featureSet){
-        Tree tree = new Tree(trainModel(featureSet, null, 0));
+        Tree tree = new Tree(trainModel(featureSet, 0));
         model = TreeZip.zip(tree);
     }
 
-    private TreeElement trainModel(FeatureSet featureSet, TreeElement parent, int depth) {
+    private TreeElement trainModel(FeatureSet featureSet, int depth) {
         if (config.depth() == depth){
-            return new Leaf(parent,featureSet,featureSet.mostFrequentValue());
+            return new Leaf(featureSet,featureSet.mostFrequentValue());
         }
         return featureSet.maxGainFeature()
-                .map(splitter -> buildNode(featureSet, parent, splitter, depth))
-                .orElse(new Leaf(parent,featureSet,featureSet.leafLabelValue()));
+                .map(splitter -> buildNode(featureSet, splitter, depth))
+                .orElse(new Leaf(featureSet,featureSet.leafLabelValue()));
     }
 
-    private TreeElement buildNode(FeatureSet featureSet, TreeElement parent, Feature splitter, int depth) {
+    private TreeElement buildNode(FeatureSet featureSet, Feature splitter, int depth) {
         List<TreeElement> children = new ArrayList<>();
-        TreeElement node = new Node(parent, children, splitter, featureSet);
+        TreeElement node = new Node(children, splitter, featureSet);
         for (FeatureSet set : featureSet.split(splitter)) {
-            children.add(trainModel(set, node, depth+1));
+            children.add(trainModel(set, depth+1));
         }
         return node;
     }

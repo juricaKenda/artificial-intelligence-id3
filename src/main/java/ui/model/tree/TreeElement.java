@@ -7,17 +7,12 @@ import java.util.List;
 import java.util.Optional;
 
 public abstract class TreeElement {
-    private TreeElement parent;
     private FeatureSet featureSet;
 
-    public TreeElement(TreeElement parent, FeatureSet featureSet) {
-        this.parent = parent;
+    public TreeElement(FeatureSet featureSet) {
         this.featureSet = featureSet;
     }
 
-    public TreeElement parent(){
-        return parent;
-    }
     public FeatureSet featureSet(){
         return featureSet;
     }
@@ -27,6 +22,5 @@ public abstract class TreeElement {
 
     public abstract List<TreeElement> children();
     public abstract Optional<Feature> splitterFeature();
-    public abstract boolean isPure();
     public abstract Optional<String> labelValue();
 }

@@ -10,8 +10,8 @@ public class Node extends TreeElement {
     private List<TreeElement> children;
     private Feature splitterFeature;
 
-    public Node(TreeElement parent, List<TreeElement> children, Feature splitterFeature, FeatureSet featureSet) {
-        super(parent,featureSet);
+    public Node(List<TreeElement> children, Feature splitterFeature, FeatureSet featureSet) {
+        super(featureSet);
         this.children = children;
         this.splitterFeature = splitterFeature;
     }
@@ -24,11 +24,6 @@ public class Node extends TreeElement {
     @Override
     public Optional<Feature> splitterFeature() {
         return Optional.of(splitterFeature);
-    }
-
-    @Override
-    public boolean isPure() {
-        return false;
     }
 
     @Override
