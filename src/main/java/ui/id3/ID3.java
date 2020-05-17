@@ -32,12 +32,12 @@ public class ID3 implements Runner {
     }
 
     private TreeElement trainModel(FeatureSet featureSet, TreeElement parent, int depth) {
-        if (depthExceeded(depth)){
+        if (config.depth() == depth){
             return new Leaf(parent,featureSet,featureSet.mostFrequentValue());
         }
         return featureSet.maxGainFeature()
                 .map(splitter -> buildNode(featureSet, parent, splitter, depth))
-                .orElse(buildLeaf(featureSet, parent));
+                .orElse(new Leaf(parent,featureSet,featureSet.leafLabelValue()));
     }
 
     private TreeElement buildNode(FeatureSet featureSet, TreeElement parent, Feature splitter, int depth) {
@@ -47,14 +47,6 @@ public class ID3 implements Runner {
             children.add(trainModel(set, node, depth+1));
         }
         return node;
-    }
-
-    private Leaf buildLeaf(FeatureSet featureSet, TreeElement parent) {
-        return new Leaf(parent,featureSet,featureSet.leafLabelValue());
-    }
-
-    private boolean depthExceeded(int depth) {
-        return config.depth() == depth;
     }
 
     @Override
@@ -82,8 +74,6 @@ public class ID3 implements Runner {
     public String labelKey() {
         return model.labelKey();
     }
-
-
     public List<String> labels() {
         return model.labelValues();
     }
