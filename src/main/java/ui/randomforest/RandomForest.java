@@ -27,7 +27,8 @@ public class RandomForest implements Runner {
 
     @Override
     public void fit(FeatureSet featureSet) {
-        List<FeatureSet> treeSets = generateForest(featureSet);
+        String globalFallback = featureSet.mostFrequentValue();
+        List<FeatureSet> treeSets = generateForest(featureSet, globalFallback);
         for (FeatureSet treeSet : treeSets) {
             ID3 id3 = new ID3(config);
             id3.fit(treeSet);
@@ -35,11 +36,12 @@ public class RandomForest implements Runner {
         }
     }
 
-    private List<FeatureSet> generateForest(FeatureSet featureSet) {
+    private List<FeatureSet> generateForest(FeatureSet featureSet, String globalFallback) {
         List<FeatureSet> treeSets = new ArrayList<>();
         while (treeSets.size() < config.numTrees()){
             FeatureSet dataSubset = selectDataSubset(featureSet);
             FeatureSet featureSubset = selectFeatureSubset(dataSubset);
+            featureSubset.setFallbackValue(globalFallback);
             treeSets.add(featureSubset);
         }
         return treeSets;

@@ -11,6 +11,7 @@ public class FeatureSet {
     private Feature label;
     private int entryCount;
     private String proxyAttribute;
+    private Optional<String> fallbackValue;
 
     public FeatureSet(String[] featureKeys) {
         features = new ArrayList<>();
@@ -19,6 +20,7 @@ public class FeatureSet {
         }
         label = features.get(features.size() - 1);
         proxyAttribute = ".";
+        fallbackValue = Optional.empty();
     }
 
     private FeatureSet(List<Feature> features, Feature label, int entries, String attribute){
@@ -26,6 +28,7 @@ public class FeatureSet {
         this.label = label;
         this.entryCount = entries;
         this.proxyAttribute = attribute;
+        this.fallbackValue = Optional.empty();
     }
 
     public void insert(String[] featureValues) {
@@ -126,10 +129,6 @@ public class FeatureSet {
         return label.key();
     }
 
-    public int labelSize() {
-        return label.optionCount();
-    }
-
     public int datasetSize() {
         return entryCount;
     }
@@ -152,4 +151,14 @@ public class FeatureSet {
     public List<String> labelValues() {
         return label.getValues().stream().distinct().collect(Collectors.toList());
     }
+
+    public Optional<String> fallbackValue(){
+        return fallbackValue;
+    }
+
+    public void setFallbackValue(String fallbackValue){
+        this.fallbackValue = Optional.of(fallbackValue);
+    }
+
+
 }

@@ -28,6 +28,7 @@ public class ID3 implements Runner {
     @Override
     public void fit(FeatureSet featureSet){
         Tree tree = new Tree(trainModel(featureSet, 0));
+        featureSet.fallbackValue().ifPresent(tree::setFallback);
         model = TreeZip.zip(tree);
     }
 
