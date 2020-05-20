@@ -36,11 +36,10 @@ public class RandomForest implements Runner {
         }
     }
 
-    private List<FeatureSet> generateForest(FeatureSet featureSet, String globalFallback) {
+    private List<FeatureSet> generateForest(FeatureSet totalSet, String globalFallback) {
         List<FeatureSet> treeSets = new ArrayList<>();
         while (treeSets.size() < config.numTrees()){
-            FeatureSet dataSubset = selectDataSubset(featureSet);
-            FeatureSet featureSubset = selectFeatureSubset(dataSubset);
+            FeatureSet featureSubset = selectFeatureSubset(selectDataSubset(totalSet));
             featureSubset.setFallbackValue(globalFallback);
             treeSets.add(featureSubset);
         }
@@ -48,18 +47,14 @@ public class RandomForest implements Runner {
     }
 
     private FeatureSet selectDataSubset(FeatureSet featureSet) {
-        int datasetSize = featureSet.datasetSize();
-        double exampleRatio = config.exampleRatio();
-        List<Integer> partition = RFRand.dataInstances(datasetSize, exampleRatio);
+        List<Integer> partition = RFRand.dataInstances(featureSet.datasetSize(), config.exampleRatio());
         partitions.add(partition);
         return featureSet.split(partition);
     }
 
     private FeatureSet selectFeatureSubset(FeatureSet featureSet) {
-        int featureCount = featureSet.featureCount();
-        double featureRatio = config.featureRatio();
-        List<Integer> selected = RFRand.featureInstances(featureCount, featureRatio);
-        featureSet.sift(selected);
+        List<Integer> selected = RFRand.featureInstances(featureSet.featureCount(), config.featureRatio());
+        featureSet.siftOnly(selected);
         features.add(featureSet.features());
         return featureSet;
     }
