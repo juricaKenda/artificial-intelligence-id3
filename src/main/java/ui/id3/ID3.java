@@ -14,7 +14,6 @@ import main.java.ui.model.tree.Node;
 import main.java.ui.model.tree.Tree;
 import main.java.ui.model.tree.TreeElement;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ID3 implements Runner {
@@ -42,24 +41,23 @@ public class ID3 implements Runner {
     }
 
     private TreeElement buildNode(FeatureSet featureSet, Feature splitter, int depth) {
-        List<TreeElement> children = new ArrayList<>();
-        TreeElement node = new Node(children, splitter, featureSet);
+        Node node = new Node(splitter, featureSet);
         for (FeatureSet set : featureSet.split(splitter)) {
-            children.add(trainModel(set, depth+1));
+            node.addChild(trainModel(set, depth+1));
         }
         return node;
     }
 
     @Override
     public Analytics predict(List<SearchableTuple> searchables){
-        ID3Analytics ID3Analytics = new ID3Analytics(model.depthLog(),model.labelValues());
+        ID3Analytics analytics = new ID3Analytics(model.depthLog(),model.labelValues());
         String labelKey = model.labelKey();
         for (SearchableTuple searchable : searchables) {
             String prediction = predict(searchable);
             String actual = searchable.get(labelKey);
-            ID3Analytics.commit(prediction,actual);
+            analytics.commit(prediction,actual);
         }
-        return ID3Analytics;
+        return analytics;
     }
 
     public String predict(SearchableTuple searchable){
