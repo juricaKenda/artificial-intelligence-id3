@@ -63,7 +63,7 @@ public class FeatureSet {
         return new FeatureSet(partitionedFeatures,label.subsetFrom(partition),partition.size(),proxyAttribute);
     }
 
-    public void sift(List<Integer> selected){
+    public void siftOnly(List<Integer> selected){
         List<String> wanted = new ArrayList<>();
         wanted.add(features.get(featureCount()-1).key());
         for (Integer index : selected) {
