@@ -29,8 +29,9 @@ public class Model {
         struct.put(proxy, wrapResult(cmd));
     }
 
-    public void bindRequest(String proxy, String cmd){
+    public void bindRequest(String proxy, String cmd, int depth){
         struct.put(proxy, wrapCommand(cmd));
+        log(depth,cmd);
     }
 
     public boolean requireFeed(){
@@ -70,7 +71,7 @@ public class Model {
         proxyWalker = struct.get(proxyWalker);
     }
 
-    public void log(int depth, String splitter){
+    private void log(int depth, String splitter){
         if (!depthLog.containsKey(depth)){
             depthLog.put(depth, new ArrayList<>());
         }

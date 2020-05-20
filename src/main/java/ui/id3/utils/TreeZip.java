@@ -26,8 +26,7 @@ public class TreeZip {
         }
         if (root.splitterFeature().isPresent()){
             String splitter = root.splitterFeature().get().toString();
-            model.bindRequest(root.proxy(), splitter);
-            model.log(depth,splitter);
+            model.bindRequest(root.proxy(), splitter, depth);
             return;
         }
         throw new UnsupportedOperationException("Unexpected tree element!");
