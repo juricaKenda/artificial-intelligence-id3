@@ -15,7 +15,7 @@ public class RFAnalytics implements Analytics {
     private int current;
     private List<String> labels;
 
-    public RFAnalytics(List<List<Integer>> partitions, List<List<String>> features,List<String> labels){
+    public RFAnalytics(List<List<Integer>> partitions, List<List<String>> features, List<String> labels){
         analytics = new ArrayList<>();
         treeMetas = mergeTreeMetas(partitions,features);
         this.labels = labels;
