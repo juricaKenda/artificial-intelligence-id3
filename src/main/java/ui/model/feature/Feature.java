@@ -3,6 +3,7 @@ package main.java.ui.model.feature;
 import main.java.ui.utils.EntropyCalculator;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Feature {
     private String key;
@@ -36,9 +37,10 @@ public class Feature {
 
 
     public double getInformationGain(Collection<String> values){
-        double entropy = EntropyCalculator.execute(getValuePartitions(values), entriesByIndex.size());
+        int totalSize = entriesByIndex.size();
+        double entropy = EntropyCalculator.execute(getValuePartitions(values), totalSize);
         for (Meta meta : valueMeta.values()){
-            entropy -= meta.getEntropy()*meta.partitionSize()/ entriesByIndex.size();
+            entropy -= meta.getEntropy()*meta.partitionSize()/ totalSize;
         }
         return entropy;
     }
@@ -62,6 +64,9 @@ public class Feature {
 
     public Collection<String> getValues() {
         return entriesByIndex.values();
+    }
+    public Collection<String> getValuesDistinct(){
+        return entriesByIndex.values().stream().distinct().collect(Collectors.toList());
     }
 
     public List<List<Integer>> valueIndexes() {
@@ -116,8 +121,5 @@ public class Feature {
 
     public String key() {
         return key;
-    }
-    public int optionCount(){
-        return valueMeta.keySet().size();
     }
 }
