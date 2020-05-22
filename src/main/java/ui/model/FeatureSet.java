@@ -11,7 +11,6 @@ public class FeatureSet {
     private Feature label;
     private int entryCount;
     private String proxyAttribute;
-    private Optional<String> fallbackValue;
 
     public FeatureSet(String[] featureKeys) {
         features = new ArrayList<>();
@@ -20,7 +19,6 @@ public class FeatureSet {
         }
         label = features.get(features.size() - 1);
         proxyAttribute = ".";
-        fallbackValue = Optional.empty();
     }
 
     private FeatureSet(List<Feature> features, Feature label, int entries, String attribute){
@@ -28,7 +26,6 @@ public class FeatureSet {
         this.label = label;
         this.entryCount = entries;
         this.proxyAttribute = attribute;
-        this.fallbackValue = Optional.empty();
     }
 
     public void insert(String[] featureValues) {
@@ -85,7 +82,7 @@ public class FeatureSet {
         }
         Integer index = partition.get(0);
         String attr = splitter.entryByIndex(index);
-        return new FeatureSet(partitionedFeatures,label.subsetFrom(partition),partition.size(),attr);
+        return new FeatureSet(partitionedFeatures, label.subsetFrom(partition), partition.size(), attr);
     }
 
     public Optional<Feature> maxGainFeature(){
@@ -95,7 +92,7 @@ public class FeatureSet {
             if (feature.key().equals(label.key())){
                 continue;
             }
-            double gain = feature.getInformationGain(label.getValues());
+            double gain = feature.getInformationGain(label.getValuesDistinct());
             if(gain > maxGain){
                 maxFeature = feature;
                 maxGain = gain;
@@ -109,10 +106,6 @@ public class FeatureSet {
 
     public String proxyAttribute() {
         return proxyAttribute;
-    }
-
-    public String leafLabelValue() {
-        return label.entriesByIndex().values().stream().findAny().orElseThrow();
     }
 
     public String mostFrequentValue(){
@@ -152,13 +145,10 @@ public class FeatureSet {
         return label.getValues().stream().distinct().collect(Collectors.toList());
     }
 
-    public Optional<String> fallbackValue(){
-        return fallbackValue;
+    public String leafLabelValue() {
+        if (labelValues().size() == 1 ){
+            return labelValues().get(0);
+        }
+        throw new UnsupportedOperationException("multiple leaf values present");
     }
-
-    public void setFallbackValue(String fallbackValue){
-        this.fallbackValue = Optional.of(fallbackValue);
-    }
-
-
 }
