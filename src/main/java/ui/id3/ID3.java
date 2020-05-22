@@ -6,13 +6,13 @@ import main.java.ui.id3.model.Config;
 import main.java.ui.id3.model.Model;
 import main.java.ui.id3.model.SearchableTuple;
 import main.java.ui.id3.utils.ID3Analytics;
-import main.java.ui.id3.utils.TreeZip;
 import main.java.ui.model.FeatureSet;
 import main.java.ui.model.feature.Feature;
 import main.java.ui.model.tree.Leaf;
 import main.java.ui.model.tree.Node;
 import main.java.ui.model.tree.Tree;
 import main.java.ui.model.tree.TreeElement;
+import main.java.ui.utils.display.TreeDisplay;
 
 import java.util.List;
 
@@ -27,17 +27,18 @@ public class ID3 implements Runner {
     @Override
     public void fit(FeatureSet featureSet){
         Tree tree = new Tree(trainModel(featureSet, 0));
-        featureSet.fallbackValue().ifPresent(tree::setFallback);
-        model = TreeZip.zip(tree);
+        model = new Model(tree);
+        TreeDisplay.show(tree);
     }
 
     private TreeElement trainModel(FeatureSet featureSet, int depth) {
         if (config.depth() == depth){
-            return new Leaf(featureSet,featureSet.mostFrequentValue());
+            return new Leaf(featureSet,"?");
         }
+
         return featureSet.maxGainFeature()
-                .map(splitter -> buildNode(featureSet, splitter, depth))
-                .orElse(new Leaf(featureSet,featureSet.leafLabelValue()));
+                .map(feature -> buildNode(featureSet, feature, depth))
+                .orElseGet(() -> new Leaf(featureSet, featureSet.leafLabelValue()));
     }
 
     private TreeElement buildNode(FeatureSet featureSet, Feature splitter, int depth) {
@@ -61,12 +62,7 @@ public class ID3 implements Runner {
     }
 
     public String predict(SearchableTuple searchable){
-        model.load();
-        while (model.requireFeed()){
-            String key = model.nextRequest();
-            String value = searchable.get(key);
-            model.feed(value);
-        }
+        model.load(searchable);
         return model.result();
     }
 
