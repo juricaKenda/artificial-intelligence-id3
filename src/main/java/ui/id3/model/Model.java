@@ -1,92 +1,62 @@
 package main.java.ui.id3.model;
 
-import java.util.ArrayList;
+import main.java.ui.model.tree.Tree;
+import main.java.ui.model.tree.TreeElement;
+
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import static java.lang.String.format;
-import static main.java.ui.id3.model.Const.CMD;
-import static main.java.ui.id3.model.Const.TARGET;
-
 public class Model {
-    private HashMap<Integer,List<String>> depthLog;
-    private HashMap<String,String> struct;
-    private String proxyWalker;
-    private String labelKey;
-    private String labelFallback;
-    private List<String> labels;
+    private TreeElement walker;
+    private Tree tree;
+    private SearchableTuple searchableTuple;
 
-    public Model(String labelKey,String fallback,List<String> labels){
-        depthLog = new HashMap<>();
-        struct = new HashMap<>();
-        this.labelKey = labelKey;
-        proxyWalker = ".";
-        labelFallback = fallback;
-        this.labels = labels;
+    public Model(Tree tree){
+        this.tree = tree;
+        this.walker = tree.root();
     }
 
-    public void bindResult(String proxy,String cmd){
-        struct.put(proxy, wrapResult(cmd));
-    }
-
-    public void bindRequest(String proxy, String cmd, int depth){
-        struct.put(proxy, wrapCommand(cmd));
-        log(depth,cmd);
-    }
-
-    public boolean requireFeed(){
-        return !reachedResult(proxyWalker);
-    }
-
-    public void feed(String value){
-        proxyWalker = struct.get(value);
+    public void load(SearchableTuple searchable) {
+        searchableTuple = searchable;
+        walker = tree.root();
     }
 
     public String result(){
-        if (proxyWalker == null){
-            return labelFallback;
+        return search();
+    }
+
+    private String search() {
+        if (walker.labelValue().isPresent()){
+            return walker.labelValue().get();
         }
-        return proxyWalker.replace(TARGET,"");
-    }
-
-    public String nextRequest() {
-        return proxyWalker.replace(CMD,"");
-
-    }
-
-    private String wrapCommand(String cmd) {
-        return format("%s%s", CMD,cmd);
-    }
-
-    private String wrapResult(String cmd) {
-        return format("%s%s",TARGET,cmd);
-    }
-
-    private boolean reachedResult(String proxyWalker) {
-        return proxyWalker == null || proxyWalker.startsWith(TARGET);
-    }
-
-    public void load() {
-        proxyWalker = ".";
-        proxyWalker = struct.get(proxyWalker);
-    }
-
-    private void log(int depth, String splitter){
-        if (!depthLog.containsKey(depth)){
-            depthLog.put(depth, new ArrayList<>());
+        if (walker.splitterFeature().isPresent()){
+            String key = walker.splitterFeature().get().key();
+            String value = searchableTuple.get(key);
+            walker = findChild(value,walker.children());
+            return search();
         }
-        depthLog.get(depth).add(splitter);
+        return null;
+    }
+
+    private TreeElement findChild(String value, List<TreeElement> children) {
+        for (TreeElement child : children) {
+            if (child.featureSet().proxyAttribute().equals(value)){
+                return child;
+            }
+        }
+        throw new UnsupportedOperationException("");
     }
 
     public String labelKey() {
-        return labelKey;
+        return tree.labelKey();
     }
 
     public HashMap<Integer, List<String>> depthLog(){
-        return depthLog;
+        return new HashMap<>();
     }
 
     public List<String> labelValues() {
-        return labels;
+        return tree.labelValues();
     }
 }
