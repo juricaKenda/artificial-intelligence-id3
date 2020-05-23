@@ -1,6 +1,7 @@
 package main.java.ui.model;
 
 import main.java.ui.model.feature.Feature;
+import main.java.ui.utils.Fallback;
 
 import java.util.*;
 import java.util.function.Function;
@@ -150,5 +151,9 @@ public class FeatureSet {
             return labelValues().get(0);
         }
         throw new UnsupportedOperationException("multiple leaf values present");
+    }
+
+    public boolean isPure() {
+        return labelValues().size() == 1;
     }
 }
