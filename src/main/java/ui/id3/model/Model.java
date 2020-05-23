@@ -2,10 +2,14 @@ package main.java.ui.id3.model;
 
 import main.java.ui.model.tree.Tree;
 import main.java.ui.model.tree.TreeElement;
+import main.java.ui.utils.Fallback;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
+
+import static java.util.Optional.of;
 
 public class Model {
     private TreeElement walker;
@@ -33,19 +37,23 @@ public class Model {
         if (walker.splitterFeature().isPresent()){
             String key = walker.splitterFeature().get().key();
             String value = searchableTuple.get(key);
-            walker = findChild(value,walker.children());
-            return search();
+            Optional<TreeElement> child = findChild(value, walker.children());
+            if (child.isPresent()){
+                walker = child.get();
+                return search();
+            }
+            return Fallback.get();
         }
-        return null;
+        throw new UnsupportedOperationException("Unexpected walker node element!");
     }
 
-    private TreeElement findChild(String value, List<TreeElement> children) {
+    private Optional<TreeElement> findChild(String value, List<TreeElement> children) {
         for (TreeElement child : children) {
             if (child.featureSet().proxyAttribute().equals(value)){
-                return child;
+                return of(child);
             }
         }
-        throw new UnsupportedOperationException("");
+        return Optional.empty();
     }
 
     public String labelKey() {
@@ -53,7 +61,21 @@ public class Model {
     }
 
     public HashMap<Integer, List<String>> depthLog(){
-        return new HashMap<>();
+        HashMap<Integer, List<String>> depths = new HashMap<>();
+        logDepths(tree.root(),depths,0);
+        return depths;
+    }
+
+    private void logDepths(TreeElement root, HashMap<Integer, List<String>> depths, int depth) {
+        if (root.splitterFeature().isPresent()){
+            if (!depths.containsKey(depth)){
+                depths.put(depth,new ArrayList<>());
+            }
+            depths.get(depth).add(root.splitterFeature().get().key());
+            for (TreeElement child : root.children()) {
+                logDepths(child,depths,depth+1);
+            }
+        }
     }
 
     public List<String> labelValues() {
