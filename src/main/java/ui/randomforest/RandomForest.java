@@ -27,7 +27,6 @@ public class RandomForest implements Runner {
 
     @Override
     public void fit(FeatureSet featureSet) {
-        String globalFallback = featureSet.mostFrequentValue();
         List<FeatureSet> treeSets = generateForest(featureSet);
         for (FeatureSet treeSet : treeSets) {
             ID3 id3 = new ID3(config);
