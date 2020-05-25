@@ -30,8 +30,8 @@ public class TreeDisplay {
     }
 
     private static String dashes(int depth) {
-        String dashes = "- - ";
-        while (depth > 0){
+        String dashes = "- ";
+        while (depth > 1){
             dashes += dashes;
             depth--;
         }
