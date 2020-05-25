@@ -1,9 +1,11 @@
 package main.java.ui.model;
 
 import main.java.ui.model.feature.Feature;
-import main.java.ui.utils.Fallback;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -87,19 +89,26 @@ public class FeatureSet {
     }
 
     public Optional<Feature> maxGainFeature(){
-        double maxGain = Double.MIN_VALUE;
+        double maxGain = -1;
         Feature maxFeature = null;
         for (Feature feature : features){
             if (feature.key().equals(label.key())){
                 continue;
             }
             double gain = feature.getInformationGain(label.getValuesDistinct());
+            if (gain == maxGain){
+                if (maxFeature != null && feature.key().compareTo(maxFeature.key()) < 0){
+                    maxFeature = feature;
+                    maxGain = gain;
+                }
+            }
             if(gain > maxGain){
                 maxFeature = feature;
                 maxGain = gain;
             }
+
         }
-        if (maxGain == Double.MIN_VALUE){
+        if (maxGain == -1){
             return Optional.empty();
         }
         return Optional.of(maxFeature);
