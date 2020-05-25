@@ -33,12 +33,11 @@ public class ID3 implements Runner {
 
     private TreeElement trainModel(FeatureSet featureSet, int depth) {
         if (config.depth() == depth){
-            return new Leaf(featureSet,"?");
+            return forceBuildLeaf(featureSet);
         }
-
         return featureSet.maxGainFeature()
                 .map(feature -> buildNode(featureSet, feature, depth))
-                .orElseGet(() -> new Leaf(featureSet, featureSet.leafLabelValue()));
+                .orElseGet(()-> new Leaf(featureSet,featureSet.mostFrequentValue()));
     }
 
     private TreeElement buildNode(FeatureSet featureSet, Feature splitter, int depth) {
@@ -47,6 +46,13 @@ public class ID3 implements Runner {
             node.addChild(trainModel(set, depth+1));
         }
         return node;
+    }
+
+    private TreeElement forceBuildLeaf(FeatureSet featureSet) {
+        if (featureSet.isPure()){
+            return new Leaf(featureSet,featureSet.leafLabelValue());
+        }
+        return new Leaf(featureSet, featureSet.mostFrequentValue());
     }
 
     @Override
