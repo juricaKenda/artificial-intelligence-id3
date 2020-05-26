@@ -12,7 +12,6 @@ import main.java.ui.model.tree.Leaf;
 import main.java.ui.model.tree.Node;
 import main.java.ui.model.tree.Tree;
 import main.java.ui.model.tree.TreeElement;
-import main.java.ui.utils.display.TreeDisplay;
 
 import java.util.List;
 
@@ -28,7 +27,6 @@ public class ID3 implements Runner {
     public void fit(FeatureSet featureSet){
         Tree tree = new Tree(trainModel(featureSet, 0));
         model = new Model(tree);
-        TreeDisplay.show(tree);
     }
 
     private TreeElement trainModel(FeatureSet featureSet, int depth) {
