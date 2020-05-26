@@ -35,6 +35,9 @@ public class ID3 implements Runner {
         if (config.depth() == depth){
             return forceBuildLeaf(featureSet);
         }
+        if (featureSet.isPure()){
+            return new Leaf(featureSet,featureSet.leafLabelValue());
+        }
         return featureSet.maxGainFeature()
                 .map(feature -> buildNode(featureSet, feature, depth))
                 .orElseGet(()-> new Leaf(featureSet,featureSet.mostFrequentValue()));
