@@ -111,10 +111,7 @@ public class Feature {
         }
         return partitioned;
     }
-    
-    public HashMap<Integer, String> entriesByIndex() {
-        return entriesByIndex;
-    }
+
     public String entryByIndex(int index) {
         return entriesByIndex.get(index);
     }
