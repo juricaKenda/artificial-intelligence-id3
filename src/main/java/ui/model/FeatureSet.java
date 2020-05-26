@@ -78,7 +78,7 @@ public class FeatureSet {
     private FeatureSet subsetFrom(List<Integer> partition, Feature splitter) {
         List<Feature> partitionedFeatures = new ArrayList<>();
         for (Feature feature : features) {
-            if (feature.equals(splitter) || feature.equals(label)){
+            if (feature.equals(splitter)){
                 continue;
             }
             partitionedFeatures.add(feature.subsetFrom(partition));
@@ -89,7 +89,7 @@ public class FeatureSet {
     }
 
     public Optional<Feature> maxGainFeature(){
-        double maxGain = -1;
+        double maxGain = 0;
         Feature maxFeature = null;
         for (Feature feature : features){
             if (feature.key().equals(label.key())){
@@ -97,7 +97,11 @@ public class FeatureSet {
             }
             double gain = feature.getInformationGain(label.getValuesDistinct());
             if (gain == maxGain){
-                if (maxFeature != null && feature.key().compareTo(maxFeature.key()) < 0){
+                if (maxFeature == null){
+                    maxFeature = feature;
+                    maxGain = gain;
+                }
+                if (feature.key().compareTo(maxFeature.key()) < 0){
                     maxFeature = feature;
                     maxGain = gain;
                 }
@@ -106,12 +110,8 @@ public class FeatureSet {
                 maxFeature = feature;
                 maxGain = gain;
             }
-
         }
-        if (maxGain == -1){
-            return Optional.empty();
-        }
-        return Optional.of(maxFeature);
+        return maxFeature == null ? Optional.empty() : Optional.of(maxFeature);
     }
 
     public String proxyAttribute() {
