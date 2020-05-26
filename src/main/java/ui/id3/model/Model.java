@@ -2,7 +2,6 @@ package main.java.ui.id3.model;
 
 import main.java.ui.model.tree.Tree;
 import main.java.ui.model.tree.TreeElement;
-import main.java.ui.utils.Fallback;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,7 +41,7 @@ public class Model {
                 walker = child.get();
                 return search();
             }
-            return Fallback.get();
+            return walker.featureSet().mostFrequentValue();
         }
         throw new UnsupportedOperationException("Unexpected walker node element!");
     }
