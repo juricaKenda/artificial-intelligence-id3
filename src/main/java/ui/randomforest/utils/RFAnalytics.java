@@ -79,7 +79,12 @@ public class RFAnalytics implements Analytics {
                     .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
                     .entrySet()
                     .stream()
-                    .max(Map.Entry.comparingByValue())
+                    .max((e1,e2)->{
+                        if (e1.getValue().equals(e2.getValue())){
+                            return -1*e1.getKey().compareTo(e2.getKey());
+                        }
+                        return e1.getValue().compareTo(e2.getValue());
+                    })
                     .map(Map.Entry::getKey)
                     .orElseThrow();
         }
