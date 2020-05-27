@@ -1,12 +1,11 @@
 package main.java.ui.model;
 
 import main.java.ui.model.feature.Feature;
+import main.java.ui.utils.Occurrences;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class FeatureSet {
@@ -119,18 +118,7 @@ public class FeatureSet {
     }
 
     public String mostFrequentValue(){
-        return label.getValues().stream()
-                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
-                .entrySet()
-                .stream()
-                .max((e1,e2)->{
-                    if (e1.getValue().equals(e2.getValue())){
-                        return -1*e1.getKey().compareTo(e2.getKey());
-                    }
-                    return e1.getValue().compareTo(e2.getValue());
-                })
-                .map(Map.Entry::getKey)
-                .orElseThrow();
+        return Occurrences.maxByCount(label.getValues(), Occurrences.Tiebreak.byName());
     }
 
     public String label() {

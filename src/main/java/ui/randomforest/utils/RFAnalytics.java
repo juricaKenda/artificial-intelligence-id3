@@ -2,12 +2,10 @@ package main.java.ui.randomforest.utils;
 
 import main.java.ui.Analytics;
 import main.java.ui.model.ConfusionMatrix;
+import main.java.ui.utils.Occurrences;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class RFAnalytics implements Analytics {
     private List<TreeMeta> treeMetas;
@@ -75,18 +73,7 @@ public class RFAnalytics implements Analytics {
             predictions = new ArrayList<>();
         }
         void decide(){
-            majority = predictions.stream()
-                    .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
-                    .entrySet()
-                    .stream()
-                    .max((e1,e2)->{
-                        if (e1.getValue().equals(e2.getValue())){
-                            return -1*e1.getKey().compareTo(e2.getKey());
-                        }
-                        return e1.getValue().compareTo(e2.getValue());
-                    })
-                    .map(Map.Entry::getKey)
-                    .orElseThrow();
+            majority = Occurrences.maxByCount(predictions, Occurrences.Tiebreak.byName());
         }
     }
     static class TreeMeta{
