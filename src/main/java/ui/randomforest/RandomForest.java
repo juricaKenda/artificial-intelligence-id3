@@ -17,6 +17,8 @@ public class RandomForest implements Runner {
     private List<ID3> models;
     private List<List<Integer>> partitions;
     private List<List<String>> features;
+    private List<String> labels;
+    private String labelKey;
 
     public RandomForest(Config config) {
        this.config = config;
@@ -33,6 +35,8 @@ public class RandomForest implements Runner {
             id3.fit(treeSet);
             models.add(id3);
         }
+        labels = featureSet.labelValues();
+        labelKey = featureSet.label();
     }
 
     private List<FeatureSet> generateForest(FeatureSet totalSet) {
@@ -60,13 +64,13 @@ public class RandomForest implements Runner {
 
     @Override
     public Analytics predict(List<SearchableTuple> searchables) {
-        RFAnalytics analytics = new RFAnalytics(partitions,features,models.get(0).labels());
+        RFAnalytics analytics = new RFAnalytics(partitions,features,labels);
         for (SearchableTuple searchable : searchables) {
             for (ID3 model : models) {
                 String prediction = model.predict(searchable);
                 analytics.commit(prediction);
             }
-            analytics.conclude(searchable.get(models.get(0).labelKey()));
+            analytics.conclude(searchable.get(labelKey));
         }
         return analytics;
     }
