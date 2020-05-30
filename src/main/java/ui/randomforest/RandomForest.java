@@ -1,13 +1,13 @@
-package main.java.ui.randomforest;
+package ui.randomforest;
 
-import main.java.ui.Analytics;
-import main.java.ui.Runner;
-import main.java.ui.id3.ID3;
-import main.java.ui.id3.model.Config;
-import main.java.ui.id3.model.SearchableTuple;
-import main.java.ui.model.FeatureSet;
-import main.java.ui.randomforest.utils.RFAnalytics;
-import main.java.ui.randomforest.utils.RFRand;
+import ui.Analytics;
+import ui.Runner;
+import ui.id3.ID3;
+import ui.id3.model.Config;
+import ui.id3.model.SearchableTuple;
+import ui.model.FeatureSet;
+import ui.randomforest.utils.RFAnalytics;
+import ui.randomforest.utils.RFRand;
 
 import java.util.ArrayList;
 import java.util.List;

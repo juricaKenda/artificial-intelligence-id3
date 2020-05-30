@@ -1,9 +1,9 @@
-package main.java.ui.utils.parser;
+package ui.utils.parser;
 
-import main.java.ui.id3.model.Config;
-import main.java.ui.id3.model.SearchableTuple;
-import main.java.ui.model.FeatureSet;
-import main.java.ui.utils.iterator.Iterator;
+import ui.id3.model.Config;
+import ui.id3.model.SearchableTuple;
+import ui.model.FeatureSet;
+import ui.utils.iterator.Iterator;
 
 import java.util.ArrayList;
 import java.util.List;

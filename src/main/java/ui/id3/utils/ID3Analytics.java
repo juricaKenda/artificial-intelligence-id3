@@ -1,7 +1,7 @@
-package main.java.ui.id3.utils;
+package ui.id3.utils;
 
-import main.java.ui.Analytics;
-import main.java.ui.model.ConfusionMatrix;
+import ui.Analytics;
+import ui.model.ConfusionMatrix;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,7 +52,7 @@ public class ID3Analytics implements Analytics {
         if (lastindex != -1){
             result = result.substring(0,lastindex);
         }
-        System.out.println(result);
+        System.out.println(result.trim());
     }
 
 

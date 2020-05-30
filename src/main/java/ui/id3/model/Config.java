@@ -1,4 +1,4 @@
-package main.java.ui.id3.model;
+package ui.id3.model;
 
 import static java.lang.String.format;
 

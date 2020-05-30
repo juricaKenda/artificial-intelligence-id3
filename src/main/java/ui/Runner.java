@@ -1,7 +1,7 @@
-package main.java.ui;
+package ui;
 
-import main.java.ui.id3.model.SearchableTuple;
-import main.java.ui.model.FeatureSet;
+import ui.id3.model.SearchableTuple;
+import ui.model.FeatureSet;
 
 import java.util.List;
 

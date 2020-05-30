@@ -1,4 +1,4 @@
-package main.java.ui.utils.iterator;
+package ui.utils.iterator;
 
 import java.io.File;
 import java.io.FileNotFoundException;

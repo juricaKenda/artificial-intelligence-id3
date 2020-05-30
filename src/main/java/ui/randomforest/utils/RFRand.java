@@ -1,4 +1,4 @@
-package main.java.ui.randomforest.utils;
+package ui.randomforest.utils;
 
 import java.util.*;
 

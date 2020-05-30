@@ -1,17 +1,17 @@
-package main.java.ui.id3;
+package ui.id3;
 
-import main.java.ui.Analytics;
-import main.java.ui.Runner;
-import main.java.ui.id3.model.Config;
-import main.java.ui.id3.model.Model;
-import main.java.ui.id3.model.SearchableTuple;
-import main.java.ui.id3.utils.ID3Analytics;
-import main.java.ui.model.FeatureSet;
-import main.java.ui.model.feature.Feature;
-import main.java.ui.model.tree.Leaf;
-import main.java.ui.model.tree.Node;
-import main.java.ui.model.tree.Tree;
-import main.java.ui.model.tree.TreeElement;
+import ui.Analytics;
+import ui.Runner;
+import ui.id3.model.Config;
+import ui.id3.model.Model;
+import ui.id3.model.SearchableTuple;
+import ui.id3.utils.ID3Analytics;
+import ui.model.FeatureSet;
+import ui.model.feature.Feature;
+import ui.model.tree.Leaf;
+import ui.model.tree.Node;
+import ui.model.tree.Tree;
+import ui.model.tree.TreeElement;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package main.java.ui.model.tree;
+package ui.model.tree;
 
 import java.util.List;
 

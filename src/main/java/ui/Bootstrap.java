@@ -1,11 +1,11 @@
-package main.java.ui;
+package ui;
 
-import main.java.ui.id3.ID3;
-import main.java.ui.id3.model.Config;
-import main.java.ui.randomforest.RandomForest;
-import main.java.ui.utils.parser.Parser;
+import ui.id3.ID3;
+import ui.id3.model.Config;
+import ui.randomforest.RandomForest;
+import ui.utils.parser.Parser;
 
-import static java.lang.String.*;
+import static java.lang.String.format;
 
 public class Bootstrap {
 

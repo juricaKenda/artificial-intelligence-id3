@@ -1,6 +1,7 @@
-package main.java.ui.model.feature;
+package ui.model.feature;
 
-import main.java.ui.utils.EntropyCalculator;
+
+import ui.utils.EntropyCalculator;
 
 import java.util.*;
 

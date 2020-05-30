@@ -1,7 +1,7 @@
-package main.java.ui.model.tree;
+package ui.model.tree;
 
-import main.java.ui.model.FeatureSet;
-import main.java.ui.model.feature.Feature;
+import ui.model.FeatureSet;
+import ui.model.feature.Feature;
 
 import java.util.ArrayList;
 import java.util.List;

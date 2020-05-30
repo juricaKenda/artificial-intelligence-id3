@@ -1,4 +1,4 @@
-package main.java.ui.utils;
+package ui.utils;
 
 import java.util.Collection;
 

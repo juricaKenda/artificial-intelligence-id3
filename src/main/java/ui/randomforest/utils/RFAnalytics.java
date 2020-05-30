@@ -1,8 +1,8 @@
-package main.java.ui.randomforest.utils;
+package ui.randomforest.utils;
 
-import main.java.ui.Analytics;
-import main.java.ui.model.ConfusionMatrix;
-import main.java.ui.utils.Occurrences;
+import ui.Analytics;
+import ui.model.ConfusionMatrix;
+import ui.utils.Occurrences;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,7 +91,7 @@ public class RFAnalytics implements Analytics {
             features.forEach(feat->builder.append(feat).append(" "));
             builder.append("\n");
             partitions.forEach(part->builder.append(part).append(" "));
-            return builder.toString();
+            return builder.toString().trim();
         }
     }
 }

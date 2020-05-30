@@ -1,7 +1,7 @@
-package main.java.ui.utils.display;
+package ui.utils.display;
 
-import main.java.ui.model.tree.Tree;
-import main.java.ui.model.tree.TreeElement;
+import ui.model.tree.Tree;
+import ui.model.tree.TreeElement;
 
 import static java.lang.String.format;
 

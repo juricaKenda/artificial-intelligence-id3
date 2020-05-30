@@ -1,4 +1,4 @@
-package main.java.ui.model;
+package ui.model;
 
 import java.util.ArrayList;
 import java.util.Collections;

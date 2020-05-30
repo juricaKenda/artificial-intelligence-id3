@@ -1,4 +1,4 @@
-package main.java.ui;
+package ui;
 
 public interface Analytics {
     void show();

@@ -1,7 +1,7 @@
-package main.java.ui.model;
+package ui.model;
 
-import main.java.ui.model.feature.Feature;
-import main.java.ui.utils.Occurrences;
+import ui.model.feature.Feature;
+import ui.utils.Occurrences;
 
 import java.util.ArrayList;
 import java.util.List;

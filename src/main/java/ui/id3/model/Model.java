@@ -1,7 +1,7 @@
-package main.java.ui.id3.model;
+package ui.id3.model;
 
-import main.java.ui.model.tree.Tree;
-import main.java.ui.model.tree.TreeElement;
+import ui.model.tree.Tree;
+import ui.model.tree.TreeElement;
 
 import java.util.ArrayList;
 import java.util.HashMap;
