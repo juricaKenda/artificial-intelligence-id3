@@ -121,14 +121,16 @@ public class Feature {
         return key;
     }
 
-    public static Comparator<Feature> maxGain(Collection<String> labelValues) {
-        return (f1, f2) -> {
-            int compare = Double.compare(f1.getInformationGain(labelValues)
-                    , f2.getInformationGain(labelValues));
-            if (compare == 0) {
-                return f2.key().compareTo(f1.key());
+    public static Comparator<Feature> byGain(Collection<String> labelValues) {
+        return (first, second) ->
+        {
+            double gainFirst = first.getInformationGain(labelValues);
+            double gainSecond = second.getInformationGain(labelValues);
+
+            if (Double.valueOf(gainFirst).equals(gainSecond)) {
+                return second.key().compareTo(first.key());
             }
-            return compare;
+            return Double.compare(gainFirst, gainSecond);
         };
     }
 }

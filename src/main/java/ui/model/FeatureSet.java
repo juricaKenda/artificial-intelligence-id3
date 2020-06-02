@@ -88,7 +88,7 @@ public class FeatureSet {
     public Optional<Feature> maxGainFeature(){
         return features.stream()
                 .filter(feature -> !isLabel(feature))
-                .max(Feature.maxGain(label.getValuesDistinct()));
+                .max(Feature.byGain(label.getValuesDistinct()));
     }
 
     private boolean isLabel(Feature feature) {
