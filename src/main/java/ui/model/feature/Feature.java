@@ -120,4 +120,15 @@ public class Feature {
     public String key() {
         return key;
     }
+
+    public static Comparator<Feature> maxGain(Collection<String> labelValues) {
+        return (f1, f2) -> {
+            int compare = Double.compare(f1.getInformationGain(labelValues)
+                    , f2.getInformationGain(labelValues));
+            if (compare == 0) {
+                return f2.key().compareTo(f1.key());
+            }
+            return compare;
+        };
+    }
 }
