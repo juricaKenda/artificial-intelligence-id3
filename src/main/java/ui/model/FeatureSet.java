@@ -3,9 +3,7 @@ package ui.model;
 import ui.model.feature.Feature;
 import ui.utils.Occurrences;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class FeatureSet {
@@ -88,29 +86,21 @@ public class FeatureSet {
     }
 
     public Optional<Feature> maxGainFeature(){
-        double maxGain = 0;
-        Feature maxFeature = null;
-        for (Feature feature : features){
-            if (feature.key().equals(label.key())){
-                continue;
-            }
-            double gain = feature.getInformationGain(label.getValuesDistinct());
-            if (gain == maxGain){
-                if (maxFeature == null){
-                    maxFeature = feature;
-                    maxGain = gain;
-                }
-                if (feature.key().compareTo(maxFeature.key()) < 0){
-                    maxFeature = feature;
-                    maxGain = gain;
-                }
-            }
-            if(gain > maxGain){
-                maxFeature = feature;
-                maxGain = gain;
-            }
-        }
-        return maxFeature == null ? Optional.empty() : Optional.of(maxFeature);
+        return features.stream()
+                .filter(feature -> !isLabel(feature))
+                .max((f1, f2) -> {
+                    Collection<String> labelValues = label.getValuesDistinct();
+                    int compare = Double.compare(f1.getInformationGain(labelValues)
+                            , f2.getInformationGain(labelValues));
+                    if (compare == 0) {
+                        return f2.key().compareTo(f1.key());
+                    }
+                    return compare;
+                });
+    }
+
+    private boolean isLabel(Feature feature) {
+        return feature.key().equals(label.key());
     }
 
     public String proxyAttribute() {
@@ -136,7 +126,7 @@ public class FeatureSet {
     public List<String> features() {
         List<String> feat = new ArrayList<>();
         for (Feature feature : features) {
-            if (feature.key().equals(label.key())){
+            if (isLabel(feature)){
                 continue;
             }
             feat.add(feature.key());
