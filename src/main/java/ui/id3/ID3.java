@@ -72,11 +72,4 @@ public class ID3 implements Runner {
         model.load(searchable);
         return model.result();
     }
-
-    public String labelKey() {
-        return model.labelKey();
-    }
-    public List<String> labels() {
-        return model.labelValues();
-    }
 }
