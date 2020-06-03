@@ -3,6 +3,7 @@ package ui.model.tree;
 import ui.model.FeatureSet;
 import ui.model.feature.Feature;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +21,13 @@ public abstract class TreeElement {
         return featureSet.proxyAttribute();
     }
 
-    public abstract List<TreeElement> children();
-    public abstract Optional<Feature> splitterFeature();
-    public abstract Optional<String> labelValue();
+    public List<TreeElement> children(){
+        return Collections.emptyList();
+    }
+    public Optional<Feature> splitterFeature(){
+        return Optional.empty();
+    }
+    public Optional<String> labelValue(){
+        return Optional.empty();
+    }
 }

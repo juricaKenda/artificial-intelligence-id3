@@ -16,9 +16,11 @@ public class Node extends TreeElement {
         this.children = new ArrayList<>();
         this.splitterFeature = splitterFeature;
     }
+
     public void addChild(TreeElement treeElement){
         children.add(treeElement);
     }
+    
     @Override
     public List<TreeElement> children() {
         return children;
@@ -27,11 +29,6 @@ public class Node extends TreeElement {
     @Override
     public Optional<Feature> splitterFeature() {
         return Optional.of(splitterFeature);
-    }
-
-    @Override
-    public Optional<String> labelValue() {
-        return Optional.empty();
     }
 
 }
