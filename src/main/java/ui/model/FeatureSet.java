@@ -3,8 +3,11 @@ package ui.model;
 import ui.model.feature.Feature;
 import ui.utils.Occurrences;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static java.util.stream.Collectors.toList;
 
 public class FeatureSet {
     private List<Feature> features;
@@ -43,20 +46,15 @@ public class FeatureSet {
     }
 
     public List<FeatureSet> split(Feature splitter){
-        List<FeatureSet> sets = new ArrayList<>();
-        List<List<Integer>> partitions = splitter.valueIndexes();
-        for (List<Integer> partition : partitions) {
-            FeatureSet featureSet = subsetFrom(partition, splitter);
-            sets.add(featureSet);
-        }
-        return sets;
+        return splitter.valueIndexes().stream()
+                .map(partition->subsetFrom(partition,splitter))
+                .collect(toList());
     }
 
     public FeatureSet split(List<Integer> partition) {
-        List<Feature> partitionedFeatures = new ArrayList<>();
-        for (Feature feature : features) {
-            partitionedFeatures.add(feature.subsetFrom(partition));
-        }
+        List<Feature> partitionedFeatures = features.stream()
+                .map(feature -> feature.subsetFrom(partition))
+                .collect(toList());
         return new FeatureSet(partitionedFeatures,label.subsetFrom(partition),partition.size(),proxyAttribute);
     }
 
@@ -68,31 +66,29 @@ public class FeatureSet {
         }
         features = features.stream()
                 .filter(feature -> wanted.contains(feature.key()))
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
 
     private FeatureSet subsetFrom(List<Integer> partition, Feature splitter) {
-        List<Feature> partitionedFeatures = new ArrayList<>();
-        for (Feature feature : features) {
-            if (feature.equals(splitter)){
-                continue;
-            }
-            partitionedFeatures.add(feature.subsetFrom(partition));
-        }
-        Integer index = partition.get(0);
-        String attr = splitter.entryByIndex(index);
+        List<Feature> partitionedFeatures = features.stream()
+                .filter(feature -> !feature.equals(splitter))
+                .map(feature->feature.subsetFrom(partition))
+                .collect(toList());
+
+        Integer anyIncludedIndex = partition.get(0);
+        String attr = splitter.entryByIndex(anyIncludedIndex);
         return new FeatureSet(partitionedFeatures, label.subsetFrom(partition), partition.size(), attr);
     }
 
     public Optional<Feature> maxGainFeature(){
         return features.stream()
-                .filter(feature -> !isLabel(feature))
+                .filter(this::isNotLabel)
                 .max(Feature.byGain(label.getValuesDistinct()));
     }
 
-    private boolean isLabel(Feature feature) {
-        return feature.key().equals(label.key());
+    private boolean isNotLabel(Feature feature) {
+        return !feature.key().equals(label.key());
     }
 
     public String proxyAttribute() {
@@ -116,18 +112,14 @@ public class FeatureSet {
     }
 
     public List<String> features() {
-        List<String> feat = new ArrayList<>();
-        for (Feature feature : features) {
-            if (isLabel(feature)){
-                continue;
-            }
-            feat.add(feature.key());
-        }
-        return feat;
+        return features.stream()
+                .filter(this::isNotLabel)
+                .map(Feature::key)
+                .collect(toList());
     }
 
     public List<String> labelValues() {
-        return label.getValues().stream().distinct().collect(Collectors.toList());
+        return label.getValues().stream().distinct().collect(toList());
     }
 
     public String leafLabelValue() {
